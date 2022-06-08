@@ -1,0 +1,106 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>Weather App</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<form
+  novalidate
+  autocapitalize="off"
+  autocomplete="off"
+  [formGroup]="weatherAppForm"
+>
+  <mat-form-field appearance="fill">
+    <mat-label>Select the city</mat-label>
+    <mat-select
+      name="cities"
+      formControlName="city"
+      (selectionChange)="onCitySelectionChange($event)"
+    >
+      <mat-option *ngFor="let city of cities" [value]="city">
+        {{ city }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<div class="forecast">
+  <div
+    *ngIf="!weatherAppForm.get('city')?.value; else loadWeather"
+    class="no-forecast"
+  >
+    No Weather forecase. Please select the city
+  </div>
+
+  <ng-template #loadWeather>
+    <div>
+      <h1 class="center"></h1>
+      <mat-card *ngFor="let l of weatherList.list" class="mat-elevation-z18">
+        <mat-card-header>
+          <mat-card-title>
+            <h2>{{ l.dt * 1000 | date: "MMM d, y, h:mm:ss a" }}</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <table>
+            <tbody>
+              <tr>
+                <td>Temperature</td>
+                <td>{{ l.main?.temp | number: "1.0-0" }}<sup>o</sup>C</td>
+              </tr>
+              <tr>
+                <td>Minimum Temperature</td>
+                <td>{{ l.main?.temp_min | number: "1.0-0" }}<sup>o</sup>C</td>
+              </tr>
+              <tr>
+                <td>Maximum Temperature</td>
+                <td>{{ l.main?.temp_max | number: "1.0-0" }}<sup>o</sup>C</td>
+              </tr>
+              <tr>
+                <td>Pressure</td>
+                <td>{{ l.main?.pressure | number: "1.0-0" }}mb</td>
+              </tr>
+              <tr>
+                <td>Sea Level</td>
+                <td>{{ l.main?.sea_level | number: "1.0-0" }}m</td>
+              </tr>
+              <tr>
+                <td>Ground Level</td>
+                <td>{{ l.main?.grnd_level | number: "1.0-0" }}m</td>
+              </tr>
+              <tr>
+                <td>Humidity</td>
+                <td>{{ l.main?.humidity | number: "1.0-0" }}%</td>
+              </tr>
+              <tr>
+                <td>Weather</td>
+                <td>
+                  <ul>
+                    <li *ngFor="let w of l.weather">
+                      <img
+                        [src]="
+                          'https://openweathermap.org/img/w/' + w.icon + '.png'
+                        "
+                        [alt]="w.id"
+                        srcset=""
+                      />
+                      {{ w?.main }}: {{ w?.description }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>Wind Speed</td>
+                <td>{{ l.wind?.speed }}</td>
+              </tr>
+              <tr>
+                <td>Wind Direction</td>
+                <td>{{ l.wind?.deg }}<sup>o</sup></td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-template>
+</div>
